@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <!-- http://answers.ros.org/question/46694/ode-integration-method-world-vs-quick-in-gazebo-ros-fuerte/ -->
+    
+      <physics type="ode">
+	<gravity xyz="0 0 -9.8"/>
+	  <ode>
+	    <solver type="world" dt="0.001" iters="10" sor="1.3"/>
+	    <constraints cfm="0.0" erp="0.2" contact_max_correcting_vel="10000.0" contact_surface_layer="0.001"/>
+	  </ode>
+      </physics>
+    
+
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <!-- The Willow Garaga offices - Removido em 09/05/2015 
+     <include>
+      <uri>model://willowgarage</uri>
+    </include> -->
+    <!-- caixa inserida para  dificultar 
+	<model name="box">
+		<pose>0 0 0.5 0 0 0</pose>
+		<link name="link">
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>1 1 1</size>
+					</box>
+				</geometry>
+			</collision>
+			<visual name="visual">
+			  <!- apenas teste - e funcionou, pois a caixa piscou 
+			        <plugin name="model_coloring" filename="/home/softelli/catkin_ws/src/PioneerModel/p3dx_led/build/libmodel_coloring.so"/>
+			  ->
+				<geometry>
+					<box>
+						<size>1 1 1</size>
+					</box>
+				</geometry>
+			<material>
+				<script>
+					<uri>file://media/materials/scripts/gazebo.material</uri>
+					<name>Gazebo/Green</name>
+				</script>
+			</material>
+			
+			</visual>
+		</link>
+	</model> 
+	# fim caixa--> 
+     <!-- apenas para inicio da deteccao do alvo 
+       <model name='unit_cylinder_1'>
+      <pose>0.561396 -1 0.5 0 -0 0</pose>
+      <link name='link'>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.1</radius>
+              <length>0.6</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.1</radius>
+              <length>0.6</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <static>0</static>
+    </model>
+    --> 
+    
+</world>
+</sdf>

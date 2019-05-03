@@ -1,0 +1,165 @@
+#!/usr/bin/env python
+
+# --------------------------------------------------#
+# - obter a leitura do laser
+# - analisar e identificar os objetos no alcance
+# - - > obter os 3 pontos mais significativos (inicio, mais profundo e fim)
+# - - > 
+# - - > discriminar os objetos encontrados (r = robot, b = beacon, o = obstaculo)
+# - calcular qual a proxima direcao e coordenada
+# - enviar comando para as rodas do robot
+#----------------------------------------------------#
+
+import roslib; roslib.load_manifest('p3dx_mover')
+import rospy
+import math
+import copy
+
+from geometry_msgs.msg import Twist
+from sensor_msgs.msg import LaserScan
+
+MAX_READS = 270
+
+class Point:
+	def __init__(this):
+		this.exists = False
+		this.x = 0.0
+		this.y = 0.0
+		this.radius = 0.0
+		this.angle = 0.0
+	  
+	def setCoord(this, radius, angle):
+		this.radius = radius
+		this.angle = angle
+		this.x = math.sin(math.radians(angle)) * radius
+		this.y = math.cos(math.radians(angle)) * radius
+		this.exists = True
+	
+	def prt(this, num):
+		print "[P", num, "]: ", this.exists, " (", this.x, ",", this.y, ") || ", this.radius, " < ", this.angle 
+
+class TargetObject:
+	def __init__(this):
+		this.p1 = Point()
+		this.p2 = Point()
+		this.p3 = Point()
+		this.center = Point()
+		this.dist = {'p1to2': 0.0, 'p1to3': 0.0, 'p2to3': 0.0}
+		this.typ = 0
+		this.radius = 0.0
+	  
+	def clear(this):
+		this.__init__()
+
+
+	def getDist(this, pA, pB):
+		return math.sqrt(math.pow(pB.x - pA.x,2) + math.pow(pB.y - pA.y,2))
+		
+	def calcPointsDist(this):
+		this.dist['p1to2'] = this.getDist(this.p1, this.p2)
+		this.dist['p2to3'] = this.getDist(this.p2, this.p3)
+		this.dist['p1to3'] = this.getDist(this.p1, this.p3)
+		
+	
+	def prt(this):
+		this.center.prt(0)
+		this.p1.prt(1)
+		this.p2.prt(2)
+		this.p3.prt(3)
+		print "dist: p1 to p2 = ", this.dist['p1to2']
+		print "dist: p2 to p3 = ", this.dist['p2to3']
+		print "dist: p1 to p3 = ", this.dist['p1to3']
+		print "typ = ", this.typ
+		print "radius = ", this.radius
+		
+def getListaObj(data):
+	obj = TargetObject()
+	limite = data.range_max * 0.8
+	idxLista = 0
+	listaObjetos = []
+	p = 0
+	while(p < MAX_READS):
+		index = p - MAX_READS/2
+		if(data.ranges[p] < limite):
+			
+			if(obj.p1.exists == False): #primeiro ainda nao encontrado
+				obj.p1.setCoord(data.ranges[p], index)
+				#print obj.p1.prt(1)
+				p = p + 1
+				continue
+			if(obj.p2.exists == False): #o segundo ainda nao foi encontrado
+				obj.p2.setCoord(data.ranges[p], index)
+				p = p + 1
+				#obj.p2.prt(2)
+				continue
+			else:
+				if(obj.p2.radius > data.ranges[p]): #o segundo ja foi encontrado, mas este eh menor
+					obj.p2.setCoord(data.ranges[p], index)
+					p = p + 1
+					#obj.p2.prt(2)
+					continue
+			if(obj.p3.exists == False): # o terceiro ponto ainda nao foi encontrado
+				if((p + 1 < MAX_READS) and (data.ranges[p + 1] < limite)): 
+					#se nao for o ultimo do indice
+					# e o proximo valor for valido
+					p = p + 1
+					continue
+				else: # eh o ultimo indice ou o proximo eh invalido
+					obj.p3.setCoord(data.ranges[p], index)
+					#obj.p3.prt(3)
+
+					#calcula as distancias entre os pontos
+					obj.calcPointsDist()
+					
+					#adiciona na lista
+					listaObjetos.append(copy.deepcopy(obj)) #insere uma copia profunda e desvinculada desse objeto
+					
+					#print "Objetos encontrados: ", len(listaObjetos)
+					#reinicia o objeto
+					obj.clear()
+		
+		p = p + 1
+	
+	return listaObjetos[:] #retorna uma copia da lista
+
+def callback(data):
+	i = 1
+	lista = getListaObj(data)
+	
+	for obj in lista:
+		print "[", i, "] -----------------------------------------------"
+		obj.prt()
+		
+#	p = 0
+#	menor_encontrado = 0	
+#
+#	menor = [0,0.00]
+#	maior = [0,0.00]
+#
+#	rospy.loginfo("%f, %f", data.range_min, data.range_max)
+#	while(p < 360):
+#		if(data.ranges[p] < data.range_max * 0.8):
+#			if(menor_encontrado == 0):
+#				menor[0]= p-135
+#				menor[1]= data.ranges[p]
+#				menor_encontrado = 1
+#			maior[0]= p-135
+#			maior[1]= data.ranges[p]
+#		p = p + 1
+#	rospy.loginfo("[%d] = %f ate [%d] = %f", menor[0], menor[1], maior[0], maior[1])
+#			#rospy.loginfo(rospy.get_namespace() + ": I heard %s")
+	
+
+if __name__ == '__main__':
+	p1_pub = rospy.Publisher('p1/cmd_vel', Twist, queue_size = 10)
+	#p1_lis = rospy.Subscriber("p1/p3dx/laser/scan", LaserScan, callback)
+	p1_lis = rospy.Subscriber("p1/p3dx/laser/scan", LaserScan, callback)
+	rospy.init_node('p3dx_mover')
+
+	while(1):
+
+		twist = Twist()
+
+		p1_pub.publish(twist)
+	exit()
+	

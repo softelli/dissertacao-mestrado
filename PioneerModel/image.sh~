@@ -1,0 +1,10 @@
+
+#!/bin/bash
+for i in {0..$1};
+do
+        robot = p$i 
+	rosrun image_view image_view image:=/$robot/camera/rgb/image_raw &
+done
+wait
+echo "all proccess complete"
+ 

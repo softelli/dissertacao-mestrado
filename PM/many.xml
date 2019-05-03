@@ -1,0 +1,10 @@
+<launch>
+    <group ns="nsp1">
+        <!-- <node name="p1" pkg="p3dx_mover" type="turtlesim_node"/> -->
+        <node name="ctrlp1" pkg="p3dx_mover" type="control"/>
+    </group>
+    <group ns="nsp2">
+        <!-- <node name="p2" pkg="turtlesim" type="turtlesim_node"/> -->
+        <node name="ctrlp1" pkg="p3dx_mover" type="control"/>
+    </group>
+</launch>

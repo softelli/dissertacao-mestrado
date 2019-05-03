@@ -1,0 +1,8 @@
+prefix=/home/softelli/catkin_ws/src/PioneerModel/p3dx_control/config/devel
+
+Name: p3dx_control
+Description: Description of p3dx_control
+Version: 0.0.1
+Cflags: 
+Libs: -L/home/softelli/catkin_ws/src/PioneerModel/p3dx_control/config/devel/lib 
+Requires: 

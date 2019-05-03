@@ -1,0 +1,126 @@
+#!/usr/bin/env python
+
+import roslib; roslib.load_manifest('p3dx_mover')
+import rospy
+import math
+from copy import deepcopy
+import sys
+from LocalObject import LocalObject
+from polar_coord import LinAng
+from std_msgs.msg import Float32
+from std_msgs.msg import Int8
+from geometry_msgs.msg import Twist
+from nav_msgs.msg import Odometry
+from sensor_msgs.msg import LaserScan
+from numpy import *
+
+#from Circumnavigation import circum
+
+
+#static parameters
+from ParametersServer import staticParameters as sp
+
+MAX_READS = sp.max_laser_reads
+RADIO_BEACON = sp.beacon_radius_id
+RADIO_ROBOT = sp.robot_radius_id
+#RADIO_TOL = sp.radius_tolerance
+ID_TYPES = sp.id_types
+LINEAR_VEL = sp.linear_velocity
+MIN_LINEAR_VEL = sp.min_linear_velocity
+ANGULAR_VEL = sp.angular_velocity
+MIN_ANGULAR_VEL = sp.min_angular_velocity
+MAX_ANGULAR_VEL = sp.max_angular_velocity
+
+
+def create_pub(nome, atributo, tipo = Float32, tam_fila = 1):
+	return rospy.Publisher("%s/%s" % (nome, atributo), tipo, queue_size=tam_fila)
+
+def create_sub(nome, atributo, origem, callback):
+	return rospy.Subscriber("%s/%s" % (nome, atributo), origem, callback)
+
+DES_RAD_TO_TARGET = create_pub("sp","desired_radius_to_target")
+DES_ANG_TO_TARGET = create_pub("sp","desired_angle_to_target")
+MIN_DISTANCE = create_pub("sp","minimal_distance")
+DES_DISTANCE = create_pub("sp","desired_distance")
+
+
+class Robo(object):
+
+	def _c_pub(self, atributo, tipo = Float32):
+		return create_pub(self.nome, atributo, tipo)
+
+	def _c_sub(self, atributo, origem, callback):
+		return create_sub(self.nome, self.atributo, origem, callback)
+
+	def __init__(self, num):
+		self.num = num
+		self.radius = self._c_pub("radius_to_target")
+		self.angle_to_target = self._c_pub("angle_to_target")
+		self.approach = self._c_pub("approach_radius_to_target")
+		self.perf_radius = self._c_pub("performed_radius")
+		self.distance = self._c_pub("robot_distance")
+		self.angle = self._c_pub("robot_angle")
+
+		self.has_beacon = self._c_pub("hasBeacon", Int8)
+		self.has_robot = self._c_pub("hasRobot", Int8)
+		self.has_alien = self._c_pub("hasAlien", Int8)
+
+		self.vizinhos = []
+
+		self.vel_publ = self._c_pub("cmd_vel", Twist)
+		self.odo_twist_sub = self._c_sub("odom", Odometry, self.set_real_twist)
+		self.laser_sub = self._c_sub("p3dx/laser/scan", LaserScan, self.set_laser)
+
+		self.control_twist = Twist()
+		self.laser_data = []
+
+	@property
+	def nome(self):
+		return "p%d" % self.num
+
+	@velocities.setter
+	def set_velocities(self, value):
+		new_tw =Twist()
+		new_tw.linear.x = value[0]
+		new_rw.angular.z = value[1]
+		self.vel_publ.publish(new_tw)
+
+	def set_real_twist(self, odom):
+		self._twist = odom.twist.twist
+
+	def set_laser(self, data):
+
+		self.laser_data = data
+
+	def __str__(self):
+		return "%s %f %f %d" % (self.nome, self._twist.angular.z, self._twist.linear.x. len(self.laser_data))
+
+
+class Controle(object):
+	def __init__(self, numRobots):
+		self.numRobots = numRobots
+		self.robos = []
+		for i in range(0, numRobots):
+			self.robos.append(Robo(i))
+
+	def run(self):
+		rospy.init_mode('p3dx_mover')
+
+		rate = rospy.Rate(50)
+
+		DES_RAD_TO_TARGET.publish(sp.desired_radius)
+		DES_ANG_TO_TARGET.publish(sp.desired_angle_to_beacon)
+		MIN_DISTANCE.publish(sp.min_distance_to_robot)
+		DES_DISTANCE.publish(sp.desired_distance_to_robot)
+
+		while not rospy.is_shutdown():
+			for robo in self.robos:
+				pass
+
+			rate.sleep()
+
+
+if __name__  == "__main__"
+	import sys
+	Controle(int(sys.argv[1])).run()	
+

@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <!-- The Willow Garaga offices - Removido em 09/05/2015 -->
+    <!--- <include>
+      <uri>model://willowgarage</uri>
+    </include> -->
+
+	<model name="box">
+		<pose>0 0 0.5 0 0 0</pose>
+		<link name="link">
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>1 1 1</size>
+					</box>
+				</geometry>
+			</collision>
+			<visual name="visual">
+			  <!-- apenas teste - e funcionou, pois a caixa piscou 
+			        <plugin name="model_coloring" filename="/home/softelli/catkin_ws/src/PioneerModel/p3dx_led/build/libmodel_coloring.so"/>
+			  -->
+				<geometry>
+					<box>
+						<size>1 1 1</size>
+					</box>
+				</geometry>
+			<material>
+				<script>
+					<uri>file://media/materials/scripts/gazebo.material</uri>
+					<name>Gazebo/Green</name>
+				</script>
+			</material>
+			
+			</visual>
+		</link>
+	</model> 
+</world>
+</sdf>

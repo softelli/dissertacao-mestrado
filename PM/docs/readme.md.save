@@ -1,0 +1,10 @@
+//Terminal 1
+$: roscore
+
+//Terminal 2
+rosrun p3dx_mover mover.py
+
+//Terminal 3
+rosrun p3dx_mover mover.py
+//o foco nesse terminal permite controlar o pionner via setas do teclado
+

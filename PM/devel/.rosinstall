@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/softelli/catkin_ws/src/PioneerModel/devel/setup.sh

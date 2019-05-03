@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+    <!-- http://answers.ros.org/question/46694/ode-integration-method-world-vs-quick-in-gazebo-ros-fuerte/ -->
+    
+      <physics type="ode">
+	<gravity xyz="0 0 -9.8"/>
+	  <ode>
+	    <solver type="world" dt="0.001" iters="10" sor="1.3"/>
+	    <constraints cfm="0.0" erp="0.2" contact_max_correcting_vel="10000.0" contact_surface_layer="0.001"/>
+	  </ode>
+      </physics>
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <!-- pl0 -->
+    <light type="point" name="pl0">
+      <pose>-1 1 1 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>1 1 1 1</specular>
+      <attenuation>
+        <range>1</range>
+        <linear>0.2</linear>
+        <constant>0.8</constant>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+      <cast_shadows>false</cast_shadows>
+    </light>
+    <!-- pl1 -->
+    <light type="point" name="pl1">
+      <pose>-1 3 1 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>1 1 1 1</specular>
+      <attenuation>
+        <range>1</range>
+        <linear>0.2</linear>
+        <constant>0.8</constant>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+      <cast_shadows>false</cast_shadows>
+    </light>
+    <!-- pl2 -->
+    <light type="point" name="pl2">
+      <pose>-1 -1 1 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>1 1 1 1</specular>
+      <attenuation>
+        <range>1</range>
+        <linear>0.2</linear>
+        <constant>0.8</constant>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+      <cast_shadows>false</cast_shadows>
+    </light>
+    <!-- pl3 -->
+    <light type="point" name="pl3">
+      <pose>-1 -3 1 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>1 1 1 1</specular>
+      <attenuation>
+        <range>1</range>
+        <linear>0.2</linear>
+        <constant>0.8</constant>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+      <cast_shadows>false</cast_shadows>
+    </light>
+</world>
+</sdf>

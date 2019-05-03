@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<robot>
+  <!-- properties (constants) -->
+  <property name="ns" value="p3dx" />
+ 
+ <gazebo reference="big_led_link">
+    <material>Gazebo/Black</material>
+    <!-- local do plugin para colorir a led -->
+    <visual>      
+        <plugin name="big_led_control" filename="libBigLedPlugin.so">
+	   <robotNamespace>${ns}</robotNamespace>
+           <frameName>VisualColor</frameName>
+        </plugin>
+  </visual>
+</gazebo>
+
+</robot>

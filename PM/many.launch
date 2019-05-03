@@ -1,0 +1,10 @@
+<launch>
+    <group ns="p1">
+        <!-- <node name="p1" pkg="p3dx_mover" type="turtlesim_node"/> -->
+        <node name="control" pkg="p3dx_mover" type="control2.py"/>
+    </group>
+    <group ns="p2">
+        <!-- <node name="p2" pkg="turtlesim" type="turtlesim_node"/> -->
+        <node name="control" pkg="p3dx_mover" type="control2.py"/>
+    </group>
+</launch>
