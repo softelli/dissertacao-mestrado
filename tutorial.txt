@@ -1,0 +1,68 @@
+///////////////////////////////
+///* system settings steps *///
+///////////////////////////////
+
+a) Install Ros Indigo with Gazebo v.2 (default)
+b) Upgrade to Gazebo v.7
+
+*** remover gazebo2 do indigo ***
+sudo apt-get remove gazebo2*
+
+*** install gazebo7 by script ***
+https://github.com/nubot-nudt/simatch/blob/master/gazebo7_install.sh
+$ chmod+ gazebo7_install.sh
+$ sudo ./gazebo7_install.sh
+
+*** complete ros_gazebo install ***
+$ sudo apt-get install ros-indigo-gazebo7-ros-pkgs
+
+c) Create workspace catkin_ws 
+
+(with ROS tutorial)
+
+d) Clone this repository on catkin_ws/src folder
+
+/////////////////////////////////////////////////
+///* to run simulations after system settins *///
+/////////////////////////////////////////////////
+
+a) Run Gazebo (with 4 agents) 
+Open terminal in src/PioneerModel folder:
+$ roslaunch p3dx_gazebo/launch/gazebo_4.launch
+
+b) Run a control module (for circumnavigation with 4 agents)
+Open new terminal in src/PioneerModel folder:
+$ rosrun p3dx_mover control_mult.py 4
+
+c) Run a control module por target robot
+$ rosrun p3dx_mover mover.py
+
+d) Run one raw image plugin for each agent
+(if you using 4 agents, use p0,...,p3 in 4 terminals
+$ rosrun image_view image_view image:=/p0/camera/rgb/image_raw
+
+////////////////////////
+/// others commands ////
+////////////////////////
+
+plugin image test
+~/catkin_ws/src/gazebo_light_sensor_plugin/worlds$ gazebo light.world 
+
+velodyne tutorial test
+~/catkin_ws/src/velodyne_plugin$ gazebo velodyne.world
+~/catkin_ws/src/velodyne_plugin/build$ ./vel 4
+
+kill all gazebo existings 
+" Unable to start server[bind: Address already in use]. There is probably another Gazebo process running.cl "
+$ killall gzserver
+
+big_led_plugin test files:
+  
+/home/softelli/catkin_ws/src/PioneerModel/p3dx_description/urdf/test.gazebo
+/home/softelli/catkin_ws/src/PioneerModel/p3dx_description/urdf/test.xacro
+/home/softelli/catkin_ws/src/PioneerModel/p3dx_gazebo/world/test.world
+/home/softelli/catkin_ws/src/PioneerModel/p3dx_gazebo/launch/test.launch (dar o roslaunch)
+
+
+
+
