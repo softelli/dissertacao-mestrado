@@ -1,0 +1,51 @@
+#ifndef GAZEBO_BIGLEDPLUGIN_HH_
+#define GAZEBO_BIGLEDPLUGIN_HH_
+
+#include <memory>
+#include <gazebo/common/Plugin.hh>
+
+namespace gazebo
+{
+  // Forward declare private data class.
+  class BigLegPluginPrivate;
+
+  /// \brief Plugin that makes a visual blink between two colors. See the
+  /// example usage below:
+  ///
+  /// \verbatim
+  ///    <plugin name="blink" filename="libBigLegPlugin.so">
+  ///
+  ///      <!-- First RGBA color, each number from 0 to 1. Defaults to red. -->
+  ///      <color_a>1 0 0 1</color_a>
+  ///
+  ///      <!-- Second RGBA color. Defaults to black. -->
+  ///      <color_a>0 0 0 1</color_a>
+  ///
+  ///      <!-- Period in seconds. Defaults to 1 s. -->
+  ///      <period>1</period>
+  ///
+  ///    </plugin>
+  /// \endverbatim
+  ///
+  /// See worlds/blink_visual.world for a complete example.
+  class GAZEBO_VISIBLE BigLegPlugin : public VisualPlugin
+  {
+    /// \brief Constructor.
+    public: BigLegPlugin();
+
+    /// \brief Destructor.
+    public: ~BigLegPlugin();
+
+    // Documentation inherited
+    public: virtual void Load(rendering::VisualPtr _visual,
+        sdf::ElementPtr _sdf);
+
+    /// \brief Update the plugin once every iteration of simulation.
+    private: void Update();
+
+    /// \internal
+    /// \brief Private data pointer
+    private: std::unique_ptr<BigLegPluginPrivate> dataPtr;
+  };
+}
+#endif
